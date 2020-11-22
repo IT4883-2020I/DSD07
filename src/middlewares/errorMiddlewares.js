@@ -5,10 +5,11 @@ export function notFoundHandler(req, res, next) {
 }
 
 export function errorHandler(err, req, res, next) {
-  res.status(res.statusCode == 200 ? 500 : res.statusCode);
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode);
   const error = {
     message: err.message
   };
-  if (process.env.NODE_ENV !== 'production') error.stack = err.stack;
+  if (process.env.NODE_ENV !== 'production' && statusCode === 500) error.stack = err.stack;
   res.json(error);
 }

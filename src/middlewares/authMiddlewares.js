@@ -1,6 +1,7 @@
 import axios from 'axios';
+import serviceApis from '../config/service_apis.js';
 
-const AUTH_BASE_API = 'https://distributed.de-lalcool.com'
+const { AUTH_BASE_API } = serviceApis;
 
 const verifyToken = async (req, res, next) => {
   let token;
