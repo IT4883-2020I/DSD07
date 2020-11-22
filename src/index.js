@@ -1,8 +1,11 @@
+import path, { dirname } from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import { notFoundHandler, errorHandler } from './middlewares/errorMiddlewares.js'
+import { verifyToken } from './middlewares/authMiddlewares.js';
 
-dotenv.config();
+const __dirname = path.resolve();
+dotenv.config({ path: `${__dirname}/.env` });
 
 const port = process.env.PORT || 5000;
 
@@ -11,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
+app.get('/', verifyToken, (req, res) => {
   res.status(200).json({
     message: 'Testing OK'
   });
