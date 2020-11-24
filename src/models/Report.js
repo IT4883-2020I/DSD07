@@ -20,6 +20,7 @@ const reportSchema = new mongoose.Schema({
   status: String,
   name: String,
   createdAt: Date,
+  updatedAt: Date,
   template:  {
     type: Types.ObjectId,
     ref: 'ReportTemplate'

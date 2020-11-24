@@ -69,15 +69,17 @@ export default {
     tables,
     charts
   }) => {
+    const updates = {};
+    if (type) updates.type = type;
+    if (title) updates.title = title;
+    if (opening) updates.opening = opening;
+    if (sectionKeys && !isEmptyArray(sectionKeys)) updates.sectionKeys = sectionKeys;
+    if (tables && !isEmptyArray(tables)) updates.tables = tables;
+    if (charts && !isEmptyArray(charts)) updates.charts = charts;
     const updatedTemplate = await ReportTemplate
       .findByIdAndUpdate(id, {
-        type,
-        title,
-        opening,
         contentType: getContentType(sectionKeys, tables, charts),
-        sectionKeys: isEmptyArray(sectionKeys) ? [] : sectionKeys,
-        tables: isEmptyArray(tables) ? [] : tables,
-        charts: isEmptyArray(charts) ? [] : charts
+        ...updates
       });
 
     return { template_id: updatedTemplate._id };

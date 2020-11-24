@@ -6,7 +6,8 @@ export default async function connectDB() {
     const conn = await mongoose.connect(MONGO_URI, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useFindAndModify: true
     });
 
     console.info(`Connected MongoDB at ${conn.connection.host}`);
