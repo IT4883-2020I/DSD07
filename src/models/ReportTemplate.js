@@ -1,13 +1,7 @@
 import mongoose from 'mongoose';
 
-const { Types } = mongoose;
-
 const reportTemplateSchema = new mongoose.Schema({
-  url: {
-    type: String,
-    required: true,
-    default: ''
-  },
+  url: String,
   type: {
     type: String,
     required: true
@@ -20,13 +14,13 @@ const reportTemplateSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  openning: {
+  opening: {
     type: String,
     required: true
   },
   contentType: {
     type: String,
-    enum: ['table', 'section', 'chart', 'mixture'],
+    enum: ['table', 'section', 'chart', 'mixture', 'none'],
     required: true
   },
   sectionKeys: {
@@ -41,6 +35,8 @@ const reportTemplateSchema = new mongoose.Schema({
     type: [String],
     required: false
   }
+}, {
+  versionKey: false
 });
 
 const ReportTemplate = mongoose.model('ReportTemplate', reportTemplateSchema, 'rp_templates');
