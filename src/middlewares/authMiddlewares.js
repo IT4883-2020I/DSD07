@@ -29,6 +29,26 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const admin = (req, res, next) => {
+  if (req.user && req.user.role === 'ADMIN') {
+    next();
+  } else {
+    res.status(403);
+    next(new Error('Forbidden: Not authorized as an ADMIN'))
+  }
+}
+
+const manager = (req, res, next) => {
+  if (req.user && req.user.role === 'MANAGER') {
+    next();
+  } else {
+    res.status(403);
+    next(new Error('Forbidden: Not authorized as a MANAGER'))
+  }
+}
+
 export {
-  verifyToken
+  verifyToken,
+  admin,
+  manager
 }
