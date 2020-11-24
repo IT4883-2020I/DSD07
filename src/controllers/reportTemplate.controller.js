@@ -1,8 +1,5 @@
 import ReportTemplate from '../models/ReportTemplate.js';
-
-function isEmptyArray(array) {
-  return !array || (Array.isArray(array) && array.length === 0);
-}
+import { isEmptyArray } from '../utils/commonUtils.js';
 
 function getContentType(sectionKeys, tables, charts) {
   if (isEmptyArray(sectionKeys) && isEmptyArray(tables) && isEmptyArray(charts)) {
