@@ -11,5 +11,14 @@ export default {
         typeKey: 1
       });
     return templates;
+  },
+
+  getTemplate: async ({
+    id
+  }) => {
+    const template = await ReportTemplate
+      .findById(id)
+      .select('-_id');
+    return template;
   }
 }
