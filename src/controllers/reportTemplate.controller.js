@@ -1,17 +1,37 @@
 import ReportTemplate from '../models/ReportTemplate.js';
 import { isEmptyArray } from '../utils/commonUtils.js';
 
-function getContentType(sectionKeys, tables, charts) {
-  if (isEmptyArray(sectionKeys) && isEmptyArray(tables) && isEmptyArray(charts)) {
-    return 'none';
-  } else if (!isEmptyArray(sectionKeys) && isEmptyArray(tables) && isEmptyArray(charts)) {
-    return 'section';
-  } else if (isEmptyArray(sectionKeys) && !isEmptyArray(tables) && isEmptyArray(charts)) {
-    return 'table';
-  } else if (isEmptyArray(sectionKeys) && isEmptyArray(tables) && !isEmptyArray(charts)) {
-    return 'chart';
+function formatSection(section) {
+  const { type, ...data } = section;
+  if (type === 'text') return section;
+  if (type === 'text-key') {
+    const { text, ...textDetail } = data;
+    const keyNames = text.match(/\$\w+/g);
+    const keys = {};
+    keyNames.forEach(key => keys[`${key.slice(1)}`] = null)
+    return {
+      type,
+      text,
+      keys,
+      ...textDetail
+    }
   }
-  return 'mixture';
+  if (type === 'table') {
+    const { headers, records } = data;
+    return {
+      type,
+      headers: headers && Array.isArray(headers) ? headers : [],
+      records: records && Array.isArray(records) ? records : []
+    }
+  }
+  if (type === 'image') {
+    const { alt, url } = data;
+    return {
+      type,
+      alt: alt || null,
+      url: url || null
+    }
+  }
 }
 
 export default {
@@ -38,23 +58,13 @@ export default {
 
   createTemplate: async ({
     type,
-    title,
-    opening,
-    sectionKeys,
-    tables,
-    charts
+    sections
   }) => {
     const newTemplate = await ReportTemplate
       .create({
         type,
         typeKey: 'custom',
-        url: null,
-        title,
-        opening,
-        contentType: getContentType(sectionKeys, tables, charts),
-        sectionKeys: isEmptyArray(sectionKeys) ? [] : sectionKeys,
-        tables: isEmptyArray(tables) ? [] : tables,
-        charts: isEmptyArray(charts) ? [] : charts
+        sections: sections.map(section => formatSection(section))
       });
 
     return { template_id: newTemplate._id };
@@ -63,24 +73,14 @@ export default {
   updateTemplate: async ({
     id,
     type,
-    title,
-    opening,
-    sectionKeys,
-    tables,
-    charts
+    sections
   }) => {
     const updates = {};
     if (type) updates.type = type;
     if (title) updates.title = title;
-    if (opening) updates.opening = opening;
-    if (sectionKeys && !isEmptyArray(sectionKeys)) updates.sectionKeys = sectionKeys;
-    if (tables && !isEmptyArray(tables)) updates.tables = tables;
-    if (charts && !isEmptyArray(charts)) updates.charts = charts;
+    if (sections) updates.sections = sections;
     const updatedTemplate = await ReportTemplate
-      .findByIdAndUpdate(id, {
-        contentType: getContentType(sectionKeys, tables, charts),
-        ...updates
-      });
+      .findByIdAndUpdate(id, updates);
 
     return { template_id: updatedTemplate._id };
   },

@@ -7,12 +7,12 @@ const { Types } = mongoose;
 export default {
   getReportsList: async ({
     userId,
-    byMe
+    role
   }) => {
     const reports = await Report
       .aggregate()
       .match({
-        [`${byMe ? 'userId' : 'reviewerId'}`]: userId
+        [`${role === 'author' ? 'userId' : 'reviewerId'}`]: userId
       })
       .project({
         _id: 0,
@@ -37,8 +37,7 @@ export default {
         ]
       })
       .select('-_id')
-      .populate('comments')
-      .populate('template', '_id type typeKey');
+      .populate('comments');
 
     return report;
   },
@@ -46,21 +45,13 @@ export default {
   createReport: async ({
     userId,
     reviewerId,
-    tables,
-    sectionKeys,
-    charts,
-    keys,
     name,
-    templateId
+    sections
   }) => {
     const newReport = await Report
       .create({
-        tables: isEmptyArray(tables) ? [] : tables,
-        sectionKeys: isEmptyArray(sectionKeys) ? [] : sectionKeys,
-        charts: isEmptyArray(sectionKeys) ? [] : charts,
-        keys,
+        sections,
         name,
-        template: Types.ObjectId(templateId),
         userId,
         reviewerId,
         isAccepted: false,
@@ -73,10 +64,7 @@ export default {
   updateReport: async ({
     id,
     userId,
-    tables,
-    sectionKeys,
-    charts,
-    keys,
+    sections,
     name,
   }) => {
     const report = await Report
@@ -88,11 +76,8 @@ export default {
     if (!report) return { report_id: null };
 
     const updates = {};
-    if (keys) updates.keys = keys;
     if (name) updates.name = name;
-    if (sectionKeys && !isEmptyArray(sectionKeys)) updates.sectionKeys = sectionKeys;
-    if (tables && !isEmptyArray(tables)) updates.tables = tables;
-    if (charts && !isEmptyArray(charts)) updates.charts = charts;
+    if (sections) updates.sections = sections;
     const updatedReport = await Report
       .findByIdAndUpdate(id, {
         updatedAt: Date.now(),

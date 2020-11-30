@@ -1,11 +1,3 @@
-function isEmptyArray(array) {
-  return !array || (Array.isArray(array) && array.length === 0);
-}
-
-/**
- * 
- * @param {Object} section 
- */
 function isValidSection(section) {
   const { type, format, text, headers, records, alt, url } = section;
   // Check type
@@ -29,6 +21,5 @@ function isValidSection(section) {
 }
 
 export {
-  isEmptyArray,
   isValidSection
 }

@@ -2,37 +2,39 @@ import express from 'express';
 import reportController from '../controllers/report.controller.js';
 import { verifyToken, manager } from '../middlewares/authMiddlewares.js';
 import asyncRoute from '../utils/asyncRoute.js';
+import { isValidSection } from '../utils/commonUtils.js';
 import handleResponse from '../utils/handleResponse.js';
 
 const router = express.Router();
 
 router.route('/user-reports')
   .get(verifyToken, asyncRoute(async (req, res) => {
+    const role = req.query.role || 'author';
+    if (role !== 'author' && role !== 'reviewer') {
+      res.status(400);
+      throw new Error('Bad request: invalid role');
+    }
     const data = await reportController.getReportsList({
       userId: req.user.id,
-      byMe: Number(req.query.byMe) === 1
+      role
     });
     return handleResponse(res, data);
   }))
   .post(verifyToken, asyncRoute(async (req, res) => {
     const {
       reviewerId,
-      tables,
-      sectionKeys,
-      charts,
-      keys,
+      sections,
       name,
-      templateId
     } = req.body;
+    if (sections && Array.isArray(sections) && sections.some(section => isValidSection(section))) {
+      res.status(400);
+      throw new Error('Bad request: invalid sections');
+    }
     const data = await reportController.createReport({
       userId: req.user.id,
       reviewerId,
-      tables,
-      sectionKeys,
-      charts,
-      keys,
+      sections: sections && Array.isArray(sections) ? sections : [],
       name,
-      templateId
     });
     return handleResponse(res, data);
   }))
@@ -48,20 +50,14 @@ router.route('/user-reports/:id')
   }))
   .patch(verifyToken, asyncRoute(async (req, res) => {
     const {
-      tables,
-      sectionKeys,
-      charts,
-      keys,
+      sections,
       name
     } = req.body;
 
     const data = await reportController.updateReport({
       id: req.params.id,
       userId: req.user.id,
-      tables,
-      sectionKeys,
-      charts,
-      keys,
+      sections: sections && Array.isArray(sections) ? sections : [],
       name
     })
 

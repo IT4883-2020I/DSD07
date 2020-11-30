@@ -1,5 +1,6 @@
 import express from 'express';
 import reportTemplateController from '../controllers/reportTemplate.controller.js';
+import { isValidSection } from '../validations/reportTemplate.validation.js';
 import { verifyToken, manager } from '../middlewares/authMiddlewares.js';
 import asyncRoute from '../utils/asyncRoute.js';
 import handleResponse from '../utils/handleResponse.js';
@@ -14,19 +15,15 @@ router.route('/reports/templates')
   .post(verifyToken, manager, asyncRoute(async (req, res) => {
     const {
       type,
-      title,
-      opening,
-      sectionKeys,
-      tables,
-      charts
+      sections
     } = req.body;
+    if (!Array.isArray(sections) || sections.some(section => !isValidSection(section))) {
+      res.status(400);
+      throw new Error('Bad request: Some sections are invalid');
+    }
     const data = await reportTemplateController.createTemplate({
       type,
-      title,
-      opening,
-      sectionKeys,
-      tables,
-      charts
+      sections
     });
     return handleResponse(res, data);
   }))
@@ -43,20 +40,16 @@ router.route('/reports/templates/:id')
     }
     const {
       type,
-      title,
-      opening,
-      sectionKeys,
-      tables,
-      charts
+      sections
     } = req.body;
+    if (!Array.isArray(sections) || sections.some(section => !isValidSection(section))) {
+      res.status(400);
+      throw new Error('Bad request: Some sections are invalid');
+    }
     const data = await reportTemplateController.updateTemplate({
       id: req.params.id,
       type,
-      title,
-      opening,
-      sectionKeys,
-      tables,
-      charts
+      sections
     });
     return handleResponse(res, data);
   }))

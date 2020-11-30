@@ -1,15 +1,12 @@
 import mongoose from 'mongoose';
+import { tepmplateSectionSchema } from './ReportTemplate.js';
 import ReportComment from './ReportComment.js';
-import ReportTemplate from './ReportTemplate.js';
 
 
 const { Types } = mongoose;
 
 const reportSchema = new mongoose.Schema({
-  tables: [[Object]],
-  keys: Object,
-  sectionKeys: [String],
-  charts: [String],
+  sections: [tepmplateSectionSchema],
   userId: Number,
   reviewerId: Number,
   comments: [{
@@ -20,11 +17,7 @@ const reportSchema = new mongoose.Schema({
   status: String,
   name: String,
   createdAt: Date,
-  updatedAt: Date,
-  template:  {
-    type: Types.ObjectId,
-    ref: 'ReportTemplate'
-  }
+  updatedAt: Date
 }, {
   versionKey: false
 });
