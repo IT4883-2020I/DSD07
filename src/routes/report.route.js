@@ -1,5 +1,6 @@
 import express from 'express';
 import reportController from '../controllers/report.controller.js';
+import reportCommentController from '../controllers/reportComment.controller.js';
 import { verifyToken, manager } from '../middlewares/authMiddlewares.js';
 import asyncRoute from '../utils/asyncRoute.js';
 import { isValidSection } from '../utils/commonUtils.js';
@@ -59,7 +60,7 @@ router.route('/user-reports/:id')
       userId: req.user.id,
       sections: sections && Array.isArray(sections) ? sections : [],
       name
-    })
+    });
 
     return handleResponse(res, data);
   }))
@@ -72,5 +73,57 @@ router.route('/user-reports/:id')
     return handleResponse(res, data);
   }));
 
+router.route('/user-reports/:report_id/comments')
+  .post(verifyToken, asyncRoute(async (req, res) => {
+    const { comment } = req.body;
+    if (!comment || typeof comment !== 'string') {
+      res.status(400);
+      throw new Error('Bad request: Empty comment');
+    }
+    const data = await reportCommentController.createComment({
+      userId: req.user.id,
+      userAvatarUrl: req.user.avatar,
+      userFullName: req.user.full_name,
+      comment,
+      reportId: req.params.report_id
+    });
+
+    return handleResponse(res, data);
+  }));
+
+router.route('/user-reports/:report_id/comments/:id')
+  .patch(verifyToken, asyncRoute(async (req, res) => {
+    const { report_id: reportId, id: commentId } = req.params;
+    const { comment } = req.body;
+    const data = await reportCommentController.updateComment({
+      reportId,
+      commentId,
+      comment,
+      userId: req.user.id
+    });
+
+    return handleResponse(res, data);
+  }))
+  .delete(verifyToken, asyncRoute(async (req, res) => {
+    const { report_id: reportId, id: commentId } = req.params;
+    const data = await reportCommentController.deleteComment({
+      reportId,
+      commentId,
+      userId: req.user.id
+    });
+
+    return handleResponse(res, data)
+  }));
+
+router.route('/user-reports/:report_id/accept')
+  .patch(verifyToken, manager, asyncRoute(async(req, res) => {
+    const { report_id: reportId } = req.params;
+    const data = await reportController.acceptReport({
+      reportId,
+      userId: req.user.id
+    });
+
+    return handleResponse(res, data);
+  }));
 
 export default router;

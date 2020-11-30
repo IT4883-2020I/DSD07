@@ -101,5 +101,15 @@ export default {
 
     await Report.deleteOne({ _id: id });
     return { report_id: report._id };
+  },
+
+  acceptReport: async ({
+    reportId,
+    userId
+  }) => {
+    const acceptedReport = await Report
+      .update({ _id: reportId, reviewerId: userId }, { status: 'accepted' });
+
+    return { report_id: acceptedReport._id };
   }
 }
