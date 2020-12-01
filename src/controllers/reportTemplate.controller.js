@@ -6,7 +6,7 @@ function formatSection(section) {
   if (type === 'text') return section;
   if (type === 'text-key') {
     const { text, ...textDetail } = data;
-    const keyNames = text.match(/\$\w+/g);
+    const keyNames = text.match(/\$[\w\d]+/g);
     const keys = {};
     keyNames.forEach(key => keys[`${key.slice(1)}`] = null)
     return {
