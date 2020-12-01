@@ -32,6 +32,14 @@ function formatSection(section) {
       url: url || null
     }
   }
+  if (type === 'predefined-section') {
+    const { format, keys } = data;
+    return {
+      type,
+      format,
+      keys: keys || {}
+    }
+  }
 }
 
 export default {

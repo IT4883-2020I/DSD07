@@ -4,12 +4,11 @@ const tepmplateSectionSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ['text', 'text-key', 'table', 'image']
+    enum: ['text', 'text-key', 'table', 'image', 'predefined-section']
   },
   format: {
     type: String,
     required: false,
-    enum: ['header', 'paragraph', 'quote']
   },
   text: {
     type: String,
