@@ -23,7 +23,7 @@ const tepmplateSectionSchema = new mongoose.Schema({
     required: false
   },
   records: {
-    type: [String],
+    type: [[String]],
     required: false
   },
   alt: {

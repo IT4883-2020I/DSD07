@@ -4,6 +4,26 @@ import { isEmptyArray } from '../utils/commonUtils.js';
 
 const { Types } = mongoose;
 
+function formatSection(section) {
+  const { type, keys, ...data } = section;
+  if (keys) {
+    const newKeys = {};
+    Object.keys(keys).forEach(key => {
+      if (key.startsWith('$')) {
+        newKeys[`${key.slice(1)}`] = keys[key];
+      } else {
+        newKeys[key] = keys[key];
+      }
+    });
+    return {
+      type,
+      keys: newKeys,
+      ...data
+    };
+  }
+  return section;
+}
+
 export default {
   getReportsList: async ({
     userId,
@@ -50,7 +70,7 @@ export default {
   }) => {
     const newReport = await Report
       .create({
-        sections,
+        sections: sections.map(section => formatSection(section)),
         name,
         userId,
         reviewerId,

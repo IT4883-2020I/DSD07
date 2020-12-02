@@ -9,7 +9,7 @@ function isEmptyArray(array) {
 function isValidSection(section) {
   const { type, format, text, headers, records, alt, url } = section;
   // Check type
-  if (!['text', 'text-key', 'table', 'image'].includes(type)) return false;
+  if (!['text', 'text-key', 'table', 'image', 'predefined-section'].includes(type)) return false;
   // Check text
   if (type === 'text' || type === 'text-key') {
     if (!['header', 'paragraph', 'quote'].includes(format)) return false;

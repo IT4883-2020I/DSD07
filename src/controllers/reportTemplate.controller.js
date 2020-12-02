@@ -2,7 +2,7 @@ import ReportTemplate from '../models/ReportTemplate.js';
 import { isEmptyArray } from '../utils/commonUtils.js';
 
 function formatSection(section) {
-  const { type, ...data } = section;
+  const { type, uniqueId, ...data } = section;
   if (type === 'text') return section;
   if (type === 'text-key') {
     const { text, ...textDetail } = data;

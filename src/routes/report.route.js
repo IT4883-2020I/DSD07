@@ -27,7 +27,7 @@ router.route('/user-reports')
       sections,
       name,
     } = req.body;
-    if (sections && Array.isArray(sections) && sections.some(section => isValidSection(section))) {
+    if (sections && Array.isArray(sections) && sections.some(section => !isValidSection(section))) {
       res.status(400);
       throw new Error('Bad request: invalid sections');
     }
