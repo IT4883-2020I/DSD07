@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Report from '../models/Report.js';
+import ReportMetric from '../models/ReportMetric.js';
 import { isEmptyArray } from '../utils/commonUtils.js';
 
 const { Types } = mongoose;
@@ -131,5 +132,10 @@ export default {
       .update({ _id: reportId, reviewerId: userId }, { status: 'accepted' });
 
     return { report_id: acceptedReport._id };
+  },
+
+  getMetrics: async () => {
+    const metrics = await ReportMetric.find();
+    return metrics;
   }
 }

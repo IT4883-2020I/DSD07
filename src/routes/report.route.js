@@ -126,4 +126,11 @@ router.route('/user-reports/:report_id/accept')
     return handleResponse(res, data);
   }));
 
+router.route('/reports/metrics')
+  .get(asyncRoute(async (req, res) => {
+    const data = await reportController.getMetrics();
+
+    return handleResponse(res, data);
+  }));
+
 export default router;
