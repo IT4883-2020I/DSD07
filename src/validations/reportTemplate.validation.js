@@ -1,10 +1,9 @@
 function isValidSection(section) {
   const { type, format, text, headers, records, alt, url } = section;
   // Check type
-  if (!['text', 'text-key', 'table', 'image'].includes(type)) return false;
+  if (!['text', 'text-key', 'table', 'image', 'predefined-section'].includes(type)) return false;
   // Check text
   if (type === 'text' || type === 'text-key') {
-    if (!['header', 'paragraph', 'quote'].includes(format)) return false;
     if (text && typeof text !== 'string') return false;
   }
   // Check table
@@ -17,6 +16,7 @@ function isValidSection(section) {
     if (alt && typeof alt !== 'string') return false;
     if (url && typeof url !== 'string') return false;
   }
+  // Check predefined sections
   return true;
 }
 

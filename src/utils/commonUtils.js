@@ -12,7 +12,7 @@ function isValidSection(section) {
   if (!['text', 'text-key', 'table', 'image', 'predefined-section'].includes(type)) return false;
   // Check text
   if (type === 'text' || type === 'text-key') {
-    if (!['header', 'paragraph', 'quote'].includes(format)) return false;
+    // if (!['header', 'paragraph', 'quote'].includes(format)) return false;
     if (text && typeof text !== 'string') return false;
   }
   // Check table
