@@ -42,9 +42,11 @@ router.route('/reports/templates/:id')
       type,
       sections
     } = req.body;
-    if (!Array.isArray(sections) || sections.some(section => !isValidSection(section))) {
-      res.status(400);
-      throw new Error('Bad request: Some sections are invalid');
+    if (sections) {
+      if (!Array.isArray(sections) || sections.some(section => !isValidSection(section))) {
+        res.status(400);
+        throw new Error('Bad request: Some sections are invalid');
+      }
     }
     const data = await reportTemplateController.updateTemplate({
       id: req.params.id,

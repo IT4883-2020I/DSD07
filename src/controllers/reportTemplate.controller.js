@@ -85,7 +85,6 @@ export default {
   }) => {
     const updates = {};
     if (type) updates.type = type;
-    if (title) updates.title = title;
     if (sections) updates.sections = sections;
     const updatedTemplate = await ReportTemplate
       .findByIdAndUpdate(id, updates);
