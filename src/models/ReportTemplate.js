@@ -33,6 +33,10 @@ const tepmplateSectionSchema = new mongoose.Schema({
   url: {
     type: String,
     required: false
+  },
+  dataSource: {
+    type: String,
+    required: false
   }
 }, {
   _id: false,

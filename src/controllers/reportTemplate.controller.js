@@ -5,7 +5,7 @@ function formatSection(section) {
   const { type, uniqueId, ...data } = section;
   if (type === 'text') return section;
   if (type === 'text-key') {
-    const { text, ...textDetail } = data;
+    const { text, dataSource, ...textDetail } = data;
     const keyNames = text.match(/\$[\w\d]+/g);
     const keys = {};
     keyNames.forEach(key => keys[`${key.slice(1)}`] = null)
@@ -13,15 +13,17 @@ function formatSection(section) {
       type,
       text,
       keys,
+      dataSource: dataSource || null,
       ...textDetail
     }
   }
   if (type === 'table') {
-    const { headers, records } = data;
+    const { headers, records, dataSource } = data;
     return {
       type,
       headers: headers && Array.isArray(headers) ? headers : [],
-      records: records && Array.isArray(records) ? records : []
+      records: records && Array.isArray(records) ? records : [],
+      dataSource: dataSource || null
     }
   }
   if (type === 'image') {
