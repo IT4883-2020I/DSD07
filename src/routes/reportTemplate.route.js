@@ -1,7 +1,7 @@
 import express from 'express';
 import reportTemplateController from '../controllers/reportTemplate.controller.js';
 import { isValidSection } from '../validations/reportTemplate.validation.js';
-import { verifyToken, manager } from '../middlewares/authMiddlewares.js';
+import { verifyToken, manager, nonStaff } from '../middlewares/authMiddlewares.js';
 import asyncRoute from '../utils/asyncRoute.js';
 import handleResponse from '../utils/handleResponse.js';
 
@@ -12,7 +12,7 @@ router.route('/reports/templates')
     const data = await reportTemplateController.getTemplatesList();
     return handleResponse(res, data);
   }))
-  .post(verifyToken, manager, asyncRoute(async (req, res) => {
+  .post(verifyToken, nonStaff, asyncRoute(async (req, res) => {
     const {
       type,
       sections
@@ -33,7 +33,7 @@ router.route('/reports/templates/:id')
     const data = await reportTemplateController.getTemplate({ id: req.params.id });
     return handleResponse(res, data);
   }))
-  .patch(verifyToken, manager, asyncRoute(async (req, res) => {
+  .patch(verifyToken, nonStaff, asyncRoute(async (req, res) => {
     if (!req.params.id) {
       res.statusCode = 400;
       throw new Error('Bad request: template id is required');
@@ -55,7 +55,7 @@ router.route('/reports/templates/:id')
     });
     return handleResponse(res, data);
   }))
-  .delete(verifyToken, manager, asyncRoute(async (req, res) => {
+  .delete(verifyToken, nonStaff, asyncRoute(async (req, res) => {
     if (!req.params.id) {
       res.statusCode = 400;
       throw new Error('Bad request: template id is required');

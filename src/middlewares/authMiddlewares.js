@@ -47,8 +47,18 @@ const manager = (req, res, next) => {
   }
 }
 
+const nonStaff = (req, res, next) => {
+  if (req.user && ['MANAGER', 'ADMIN', 'SUPER_ADMIN', 'SUPERADMIN'].includes(req.user.role)) {
+    next();
+  } else {
+    res.status(403);
+    next(new Error('Forbidden: Not authorized as MANAGER or ADMIN or SUPER_ADMIN'));
+  }
+}
+
 export {
   verifyToken,
   admin,
-  manager
+  manager,
+  nonStaff
 }
